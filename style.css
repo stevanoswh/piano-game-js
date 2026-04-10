@@ -1,0 +1,471 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #1a1a2e;
+    color: #eee;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+#app {
+    text-align: center;
+    padding: 20px;
+    max-width: 900px;
+    width: 100%;
+}
+
+h1 {
+    font-size: 2.2rem;
+    margin-bottom: 10px;
+    background: linear-gradient(135deg, #e94560, #0f3460);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+#hud {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-bottom: 15px;
+    font-size: 1.2rem;
+}
+
+#hud span {
+    font-weight: bold;
+    color: #e94560;
+}
+
+#note-highway {
+    position: relative;
+    height: 200px;
+    background: linear-gradient(180deg, #16213e 0%, #0f3460 100%);
+    border-radius: 10px 10px 0 0;
+    overflow: hidden;
+    border: 2px solid #0f3460;
+    border-bottom: none;
+}
+
+#note-highway .falling-note {
+    position: absolute;
+    border-radius: 6px;
+    animation: fall linear forwards;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: bold;
+    color: rgba(255, 255, 255, 0.9);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+@keyframes fall {
+    from { top: -50px; }
+    to { top: 200px; }
+}
+
+#note-highway .hit-line {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: #e94560;
+    box-shadow: 0 0 10px #e94560;
+}
+
+#piano {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    height: 180px;
+    margin: 0 auto;
+    user-select: none;
+}
+
+.key {
+    position: relative;
+    cursor: pointer;
+    transition: background 0.05s;
+}
+
+.key.white {
+    width: 56px;
+    height: 180px;
+    background: linear-gradient(180deg, #f8f8f8 0%, #e8e8e8 100%);
+    border: 1px solid #bbb;
+    border-radius: 0 0 8px 8px;
+    z-index: 1;
+}
+
+.key.white:hover {
+    background: linear-gradient(180deg, #fff 0%, #f0f0f0 100%);
+}
+
+.key.white.active {
+    background: linear-gradient(180deg, #e94560 0%, #c23152 100%);
+    transform: scaleY(0.98);
+    transform-origin: top;
+}
+
+.key.white.highlight {
+    background: linear-gradient(180deg, #4ecca3 0%, #38b28a 100%);
+    box-shadow: 0 0 15px rgba(78, 204, 163, 0.5);
+}
+
+.key.black {
+    width: 36px;
+    height: 115px;
+    background: linear-gradient(180deg, #333 0%, #111 100%);
+    border-radius: 0 0 6px 6px;
+    margin-left: -18px;
+    margin-right: -18px;
+    z-index: 2;
+}
+
+.key.black:hover {
+    background: linear-gradient(180deg, #444 0%, #222 100%);
+}
+
+.key.black.active {
+    background: linear-gradient(180deg, #e94560 0%, #a82040 100%);
+    transform: scaleY(0.97);
+    transform-origin: top;
+}
+
+.key.black.highlight {
+    background: linear-gradient(180deg, #4ecca3 0%, #2a9070 100%);
+    box-shadow: 0 0 15px rgba(78, 204, 163, 0.5);
+}
+
+.key .label {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.7rem;
+    color: #999;
+    pointer-events: none;
+}
+
+.key.black .label {
+    color: #666;
+    bottom: 8px;
+}
+
+#controls {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+#controls button {
+    padding: 10px 22px;
+    font-size: 1rem;
+    border: 2px solid #0f3460;
+    background: #16213e;
+    color: #eee;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+#controls button:hover {
+    background: #0f3460;
+}
+
+#controls button.active {
+    background: #e94560;
+    border-color: #e94560;
+}
+
+#song-select {
+    padding: 10px 14px;
+    font-size: 1rem;
+    border: 2px solid #0f3460;
+    background: #16213e;
+    color: #eee;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+#instructions {
+    margin-top: 20px;
+    font-size: 0.9rem;
+    color: #888;
+    line-height: 1.6;
+}
+
+.feedback {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2.5rem;
+    font-weight: bold;
+    pointer-events: none;
+    animation: feedbackPop 0.6s ease-out forwards;
+    z-index: 100;
+}
+
+.feedback.perfect {
+    color: #4ecca3;
+    text-shadow: 0 0 20px rgba(78, 204, 163, 0.7);
+}
+
+.feedback.good {
+    color: #e9c46a;
+    text-shadow: 0 0 20px rgba(233, 196, 106, 0.7);
+}
+
+.feedback.miss {
+    color: #e94560;
+    text-shadow: 0 0 20px rgba(233, 69, 96, 0.7);
+}
+
+@keyframes feedbackPop {
+    0% { opacity: 1; transform: translate(-50%, -50%) scale(0.5); }
+    50% { transform: translate(-50%, -50%) scale(1.2); }
+    100% { opacity: 0; transform: translate(-50%, -60%) scale(1); }
+}
+
+.particles {
+    position: fixed;
+    pointer-events: none;
+    z-index: 99;
+}
+
+.particle {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    animation: particleFly 0.5s ease-out forwards;
+}
+
+@keyframes particleFly {
+    from { opacity: 1; transform: translate(0, 0) scale(1); }
+    to { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(0); }
+}
+
+/* ── DJ Beat Pads ─────────────────────────────────────────────────── */
+#dj-section {
+    margin-top: 30px;
+    padding: 20px;
+    background: #16213e;
+    border-radius: 12px;
+    border: 2px solid #0f3460;
+}
+
+#dj-section h2 {
+    font-size: 1.4rem;
+    margin-bottom: 8px;
+    color: #e94560;
+}
+
+#dj-status {
+    font-size: 0.9rem;
+    color: #888;
+    margin-bottom: 14px;
+    min-height: 1.4em;
+}
+
+#dj-status.recording {
+    color: #e94560;
+    font-weight: bold;
+}
+
+#dj-settings {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 18px;
+    font-size: 0.9rem;
+    color: #aaa;
+}
+
+#dj-settings .len-btn {
+    padding: 5px 14px;
+    font-size: 0.85rem;
+    border: 2px solid #0f3460;
+    background: #1a1a2e;
+    color: #eee;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+#dj-settings .len-btn.active {
+    background: #0f3460;
+    border-color: #4ecca3;
+    color: #4ecca3;
+}
+
+#bpm-input {
+    width: 60px;
+    padding: 5px 8px;
+    font-size: 0.85rem;
+    border: 2px solid #0f3460;
+    background: #1a1a2e;
+    color: #eee;
+    border-radius: 6px;
+    text-align: center;
+}
+
+#pads {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 18px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.pad {
+    position: relative;
+    aspect-ratio: 1;
+    background: linear-gradient(145deg, #1a1a2e, #0f1a30);
+    border: 3px solid #0f3460;
+    border-radius: 14px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: all 0.15s;
+    user-select: none;
+    overflow: hidden;
+}
+
+.pad:hover {
+    border-color: #4ecca3;
+    transform: scale(1.03);
+}
+
+.pad:active, .pad.triggered {
+    transform: scale(0.96);
+}
+
+.pad.recording {
+    border-color: #e94560;
+    animation: padRecPulse 0.8s ease-in-out infinite;
+}
+
+@keyframes padRecPulse {
+    0%, 100% { box-shadow: 0 0 8px rgba(233, 69, 96, 0.4); }
+    50% { box-shadow: 0 0 25px rgba(233, 69, 96, 0.9), inset 0 0 15px rgba(233, 69, 96, 0.15); }
+}
+
+.pad.has-beat {
+    border-color: #4ecca3;
+    background: linear-gradient(145deg, #142825, #0f1a30);
+}
+
+.pad.has-beat.playing {
+    border-color: #e9c46a;
+    box-shadow: 0 0 20px rgba(233, 196, 106, 0.5), inset 0 0 15px rgba(233, 196, 106, 0.1);
+}
+
+.pad.has-beat.looping {
+    border-color: #4ecca3;
+    box-shadow: 0 0 20px rgba(78, 204, 163, 0.5), inset 0 0 15px rgba(78, 204, 163, 0.1);
+}
+
+.pad .pad-key {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #fff;
+    opacity: 0.8;
+}
+
+.pad .pad-label {
+    font-size: 0.75rem;
+    color: #888;
+}
+
+.pad.has-beat .pad-label {
+    color: #4ecca3;
+}
+
+.pad .pad-timer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 4px;
+    background: #e94560;
+    border-radius: 0 2px 0 14px;
+    transition: width 0.1s linear;
+    width: 0%;
+}
+
+.pad.has-beat .pad-timer {
+    background: #4ecca3;
+}
+
+.pad .pad-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 4px;
+    background: #e9c46a;
+    border-radius: 0 2px 0 14px;
+    width: 0%;
+}
+
+.pad .pad-delete {
+    position: absolute;
+    top: 4px;
+    right: 6px;
+    font-size: 0.7rem;
+    color: #e94560;
+    background: none;
+    border: none;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.15s;
+    padding: 2px 5px;
+}
+
+.pad:hover .pad-delete {
+    opacity: 1;
+}
+
+#dj-controls {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+#dj-controls button {
+    padding: 8px 20px;
+    font-size: 0.95rem;
+    border: 2px solid #0f3460;
+    background: #1a1a2e;
+    color: #eee;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+#dj-controls button:hover {
+    background: #0f3460;
+}
+
+#btn-export-mix {
+    border-color: #e9c46a !important;
+    color: #e9c46a !important;
+}
